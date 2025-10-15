@@ -380,12 +380,22 @@
                 
                 <div id="alertBox"></div>
 
-                <div class="form-group">
-                    <label>User ID</label>
-                    <input type="text" id="userId" placeholder="Enter your user ID">
-                    <small style="display: block; margin-top: 0.5rem; color: #6b7280; font-size: 0.75rem;">
-                        Create account via API signup
-                    </small>
+                <!-- Auth Section -->
+                <div class="form-group" id="authSection">
+                    <label id="authLabel">Sign In / Sign Up</label>
+                    <input type="text" id="userName" placeholder="Your name" style="margin-bottom: 0.5rem;">
+                    <input type="email" id="userEmail" placeholder="Your email">
+                    <button class="send-btn" onclick="handleAuth()" id="authBtn" style="width: 100%; margin-top: 0.75rem;">
+                        Sign In / Sign Up 🚀
+                    </button>
+                    <div id="userInfo" style="display: none; margin-top: 0.75rem; padding: 0.75rem; background: #e8f5e9; border-radius: 8px;">
+                        <div style="font-size: 0.875rem; color: #2e7d32;">
+                            <strong>👤 <span id="displayName"></span></strong>
+                        </div>
+                        <button onclick="logout()" style="margin-top: 0.5rem; padding: 0.5rem 1rem; background: #ff4757; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.75rem;">
+                            Logout
+                        </button>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -419,9 +429,9 @@
                 <div class="messages" id="messages">
                     <div class="welcome-message">
                         <h3>👋 Welcome!</h3>
-                        <p>Enter your User ID and start chatting with your AI companion.</p>
+                        <p>Sign in with your name and email to start chatting with your AI companion.</p>
                         <p style="margin-top: 1rem; font-size: 0.875rem;">
-                            Powered by <strong>Multi-LLM Backend</strong> 🚀
+                            Powered by <strong>Multi-LLM Backend</strong> (Groq/OpenAI/Anthropic) 🚀
                         </p>
                     </div>
                 </div>
@@ -449,6 +459,7 @@
         let selectedGender = 'girl';
         let companionName = 'Emma';
         let apiUrl = 'http://127.0.0.1:8000';
+        let currentUser = null;
 
         window.addEventListener('load', () => {
             loadSettings();
@@ -458,7 +469,7 @@
         function loadSettings() {
             const savedUrl = localStorage.getItem('apiUrl');
             const savedGender = localStorage.getItem('selectedGender');
-            const savedUserId = localStorage.getItem('userId');
+            const savedUser = localStorage.getItem('currentUser');
             
             if (savedUrl) {
                 apiUrl = savedUrl;
@@ -469,9 +480,108 @@
                 selectCompanion(savedGender);
             }
             
-            if (savedUserId) {
-                document.getElementById('userId').value = savedUserId;
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showUserInfo();
             }
+        }
+
+        function showUserInfo() {
+            document.getElementById('userName').style.display = 'none';
+            document.getElementById('userEmail').style.display = 'none';
+            document.getElementById('authBtn').style.display = 'none';
+            document.getElementById('userInfo').style.display = 'block';
+            document.getElementById('displayName').textContent = currentUser.name;
+            document.getElementById('authLabel').textContent = 'Account';
+        }
+
+        function hideUserInfo() {
+            document.getElementById('userName').style.display = 'block';
+            document.getElementById('userEmail').style.display = 'block';
+            document.getElementById('authBtn').style.display = 'block';
+            document.getElementById('userInfo').style.display = 'none';
+            document.getElementById('authLabel').textContent = 'Sign In / Sign Up';
+        }
+
+        async function handleAuth() {
+            const name = document.getElementById('userName').value.trim();
+            const email = document.getElementById('userEmail').value.trim();
+            
+            if (!name || !email) {
+                showAlert('Please enter your name and email', 'error');
+                return;
+            }
+            
+            if (!email.includes('@')) {
+                showAlert('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            document.getElementById('authBtn').disabled = true;
+            document.getElementById('authBtn').textContent = 'Signing in...';
+            
+            try {
+                // Try login first
+                let response = await fetch(`${apiUrl}/auth/login`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ email: email })
+                });
+                
+                let data = await response.json();
+                
+                // If login fails, try signup
+                if (!response.ok) {
+                    response = await fetch(`${apiUrl}/auth/signup`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            name: name,
+                            email: email,
+                            voice_preference: 'nova',
+                            gender_preference: selectedGender
+                        })
+                    });
+                    
+                    data = await response.json();
+                    
+                    if (response.ok) {
+                        showAlert('✅ Account created successfully!', 'success');
+                    }
+                }
+                
+                if (response.ok) {
+                    currentUser = data;
+                    localStorage.setItem('currentUser', JSON.stringify(data));
+                    showUserInfo();
+                    showAlert(`✅ Welcome ${data.name}!`, 'success');
+                } else {
+                    showAlert(`Error: ${data.detail || 'Authentication failed'}`, 'error');
+                }
+            } catch (error) {
+                showAlert('Connection error. Make sure backend is running.', 'error');
+            } finally {
+                document.getElementById('authBtn').disabled = false;
+                document.getElementById('authBtn').textContent = 'Sign In / Sign Up 🚀';
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            hideUserInfo();
+            document.getElementById('userName').value = '';
+            document.getElementById('userEmail').value = '';
+            document.getElementById('messages').innerHTML = `
+                <div class="welcome-message">
+                    <h3>👋 Welcome!</h3>
+                    <p>Sign in with your name and email to start chatting with your AI companion.</p>
+                    <p style="margin-top: 1rem; font-size: 0.875rem;">
+                        Powered by <strong>Multi-LLM Backend</strong> (Groq/OpenAI/Anthropic) 🚀
+                    </p>
+                </div>
+            `;
+            showAlert('Logged out successfully', 'success');
         }
 
         async function testConnection() {
@@ -505,11 +615,10 @@
         }
 
         async function sendMessage() {
-            const userId = document.getElementById('userId').value.trim();
             const message = document.getElementById('messageInput').value.trim();
             
-            if (!userId) {
-                showAlert('Please enter your User ID', 'error');
+            if (!currentUser) {
+                showAlert('Please sign in first', 'error');
                 return;
             }
             
@@ -518,7 +627,7 @@
                 return;
             }
             
-            localStorage.setItem('userId', userId);
+            // User already logged in
             document.getElementById('messageInput').value = '';
             
             addMessage('You', message, 'user', '👤');
@@ -533,7 +642,7 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        user_id: userId,
+                        user_id: currentUser.user_id,
                         companion_gender: selectedGender,
                         message: message
                     })
