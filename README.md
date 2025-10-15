@@ -213,12 +213,8 @@ Stores all conversation history between users and companions.
 
 This modular architecture supports easy integration of:
 
-- **Text-to-Speech (TTS)** - Voice output
-- **Speech-to-Text (STT)** - Voice input
 - **Face Recognition** - Visual identification
-- **Emotion Detection** - Sentiment analysis
 - **Real LLM Integration** - OpenAI, Anthropic, etc.
-- **Advanced Memory** - Long-term conversation memory
 - **Multi-modal Input** - Images, voice, video
 
 ## 🐛 Troubleshooting
