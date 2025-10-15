@@ -1,0 +1,19 @@
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+pymongo>=4.10.0
+pydantic>=2.10.0
+pydantic-settings>=2.6.0
+python-multipart>=0.0.12
+email-validator>=2.2.0
+
+# LLM APIs
+openai>=1.50.0
+groq>=0.11.0
+anthropic>=0.39.0
+
+# Audio Processing
+pydub>=0.25.1
+
+# Additional utilities
+python-dotenv>=1.0.0
+aiofiles>=24.1.0
