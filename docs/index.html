@@ -382,11 +382,10 @@
 
                 <!-- Auth Section -->
                 <div class="form-group" id="authSection">
-                    <label id="authLabel">Sign In / Sign Up</label>
-                    <input type="text" id="userName" placeholder="Your name" style="margin-bottom: 0.5rem;">
-                    <input type="email" id="userEmail" placeholder="Your email">
+                    <label id="authLabel">Enter Your Name</label>
+                    <input type="text" id="userName" placeholder="Your name">
                     <button class="send-btn" onclick="handleAuth()" id="authBtn" style="width: 100%; margin-top: 0.75rem;">
-                        Sign In / Sign Up 🚀
+                        Start Chatting 🚀
                     </button>
                     <div id="userInfo" style="display: none; margin-top: 0.75rem; padding: 0.75rem; background: #e8f5e9; border-radius: 8px;">
                         <div style="font-size: 0.875rem; color: #2e7d32;">
@@ -429,7 +428,7 @@
                 <div class="messages" id="messages">
                     <div class="welcome-message">
                         <h3>👋 Welcome!</h3>
-                        <p>Sign in with your name and email to start chatting with your AI companion.</p>
+                        <p>Enter your name to start chatting with your AI companion.</p>
                         <p style="margin-top: 1rem; font-size: 0.875rem;">
                             Powered by <strong>Multi-LLM Backend</strong> (Groq/OpenAI/Anthropic) 🚀
                         </p>
@@ -488,7 +487,6 @@
 
         function showUserInfo() {
             document.getElementById('userName').style.display = 'none';
-            document.getElementById('userEmail').style.display = 'none';
             document.getElementById('authBtn').style.display = 'none';
             document.getElementById('userInfo').style.display = 'block';
             document.getElementById('displayName').textContent = currentUser.name;
@@ -497,30 +495,26 @@
 
         function hideUserInfo() {
             document.getElementById('userName').style.display = 'block';
-            document.getElementById('userEmail').style.display = 'block';
             document.getElementById('authBtn').style.display = 'block';
             document.getElementById('userInfo').style.display = 'none';
-            document.getElementById('authLabel').textContent = 'Sign In / Sign Up';
+            document.getElementById('authLabel').textContent = 'Enter Your Name';
         }
 
         async function handleAuth() {
             const name = document.getElementById('userName').value.trim();
-            const email = document.getElementById('userEmail').value.trim();
             
-            if (!name || !email) {
-                showAlert('Please enter your name and email', 'error');
-                return;
-            }
-            
-            if (!email.includes('@')) {
-                showAlert('Please enter a valid email address', 'error');
+            if (!name) {
+                showAlert('Please enter your name', 'error');
                 return;
             }
             
             document.getElementById('authBtn').disabled = true;
-            document.getElementById('authBtn').textContent = 'Signing in...';
+            document.getElementById('authBtn').textContent = 'Starting...';
             
             try {
+                // Generate a simple email from name
+                const email = `${name.toLowerCase().replace(/\s+/g, '.')}@aicompanion.local`;
+                
                 // Try login first
                 let response = await fetch(`${apiUrl}/auth/login`, {
                     method: 'POST',
@@ -546,7 +540,7 @@
                     data = await response.json();
                     
                     if (response.ok) {
-                        showAlert('✅ Account created successfully!', 'success');
+                        showAlert('✅ Welcome!', 'success');
                     }
                 }
                 
@@ -562,7 +556,7 @@
                 showAlert('Connection error. Make sure backend is running.', 'error');
             } finally {
                 document.getElementById('authBtn').disabled = false;
-                document.getElementById('authBtn').textContent = 'Sign In / Sign Up 🚀';
+                document.getElementById('authBtn').textContent = 'Start Chatting 🚀';
             }
         }
 
@@ -571,11 +565,10 @@
             localStorage.removeItem('currentUser');
             hideUserInfo();
             document.getElementById('userName').value = '';
-            document.getElementById('userEmail').value = '';
             document.getElementById('messages').innerHTML = `
                 <div class="welcome-message">
                     <h3>👋 Welcome!</h3>
-                    <p>Sign in with your name and email to start chatting with your AI companion.</p>
+                    <p>Enter your name to start chatting with your AI companion.</p>
                     <p style="margin-top: 1rem; font-size: 0.875rem;">
                         Powered by <strong>Multi-LLM Backend</strong> (Groq/OpenAI/Anthropic) 🚀
                     </p>
