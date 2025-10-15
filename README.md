@@ -1,16 +1,28 @@
 # AI Companion Backend
 
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-green)
+![MongoDB](https://img.shields.io/badge/MongoDB-Latest-brightgreen)
+![LLM](https://img.shields.io/badge/LLM-Groq%20%7C%20OpenAI%20%7C%20Anthropic-purple)
+
 A complete backend system for an AI Companion application using **FastAPI** and **MongoDB**. This system enables human-like conversations between users and AI companions (boy/girl) with memory retention and personality-driven responses.
+
+## 🌐 Live Demo
+
+- **Frontend**: [https://parthpatel-1011.github.io/AI_Companion/](https://parthpatel-1011.github.io/AI_Companion/)
+- **Repository**: [https://github.com/ParthPatel-1011/AI_Companion](https://github.com/ParthPatel-1011/AI_Companion)
 
 ## 🌟 Features
 
+- **Multi-LLM Support**: Switch between Groq (free & fast!), OpenAI, and Anthropic
 - **User Management**: Registration and login system
 - **AI Companions**: Multiple AI personalities (boy/girl) with unique backstories
-- **Conversational AI**: Context-aware, human-like responses
+- **Conversational AI**: Context-aware, human-like responses powered by LLMs
 - **Chat Memory**: Persistent conversation history
 - **RESTful API**: Clean, documented API endpoints
 - **MongoDB Integration**: Flexible, unstructured data storage
 - **Modular Architecture**: Easy to extend with new features
+- **Live Demo**: Deployed on GitHub Pages
 
 ## 📁 Project Structure
 
