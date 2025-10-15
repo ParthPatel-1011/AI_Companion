@@ -167,39 +167,6 @@ Open `index.html` in your web browser to test the chat functionality.
 - `GET /chat/stats/{user_id}` - Get chat statistics
 - `DELETE /chat/history/{user_id}` - Clear chat history
 
-## 💡 Usage Examples
-
-### 1. Register a User
-
-```bash
-curl -X POST "http://127.0.0.1:8000/auth/signup" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "John Doe",
-    "email": "john@example.com",
-    "voice_preference": "female_1",
-    "gender_preference": "girl"
-  }'
-```
-
-### 2. Send a Chat Message
-
-```bash
-curl -X POST "http://127.0.0.1:8000/chat/send" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "user_id": "YOUR_USER_ID",
-    "companion_gender": "girl",
-    "message": "Hey! How are you today?"
-  }'
-```
-
-### 3. Get Chat History
-
-```bash
-curl "http://127.0.0.1:8000/chat/history/YOUR_USER_ID?limit=20"
-```
-
 ## 🔧 Configuration
 
 ### Database Configuration
