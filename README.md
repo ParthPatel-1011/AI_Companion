@@ -2,10 +2,11 @@
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-green)
-![MongoDB](https://img.shields.io/badge/MongoDB-Latest-brightgreen)
-![LLM](https://img.shields.io/badge/LLM-Groq%20%7C%20OpenAI%20%7C%20Anthropic-purple)
+![SQLite](https://img.shields.io/badge/SQLite-Latest-brightgreen)
+![LLM](https://img.shields.io/badge/LLM-Groq-purple)
+![TTS](https://img.shields.io/badge/TTS-ElevenLabs-orange)
 
-A complete backend system for an AI Companion application using **FastAPI** and **MongoDB**. This system enables human-like conversations between users and AI companions (boy/girl) with memory retention and personality-driven responses.
+A complete backend system for an AI Companion application using **FastAPI**, **SQLite**, and **Groq LLM**. This system enables human-like conversations between users and AI companions (Emma & Alex) with memory retention, personality-driven responses, and voice capabilities powered by ElevenLabs.
 
 ## 🌐 Live Demo
 
@@ -14,15 +15,16 @@ A complete backend system for an AI Companion application using **FastAPI** and 
 
 ## 🌟 Features
 
-- **Multi-LLM Support**: Switch between Groq (free & fast!), OpenAI, and Anthropic
-- **User Management**: Registration and login system
-- **AI Companions**: Multiple AI personalities (boy/girl) with unique backstories
-- **Conversational AI**: Context-aware, human-like responses powered by LLMs
-- **Chat Memory**: Persistent conversation history
-- **RESTful API**: Clean, documented API endpoints
-- **MongoDB Integration**: Flexible, unstructured data storage
+- **Groq LLM Integration**: Fast, free AI responses using Llama 3.1 models
+- **Voice Features**: Natural text-to-speech with ElevenLabs (gender-appropriate voices)
+- **User Management**: Simple name-based authentication system
+- **AI Companions**: Emma (girl) and Alex (boy) with unique personalities
+- **Conversational Memory**: Context-aware responses with conversation history
+- **Chat History**: Persistent storage of all conversations
+- **RESTful API**: Clean, documented API endpoints with FastAPI
+- **SQLite Database**: Simple, file-based data storage
 - **Modular Architecture**: Easy to extend with new features
-- **Live Demo**: Deployed on GitHub Pages
+- **Live Demo**: Deployed and accessible via GitHub Pages
 
 ## 📁 Project Structure
 
@@ -51,100 +53,105 @@ ai_companion_backend/
 └── index.html                  # Test frontend UI
 ```
 
-## 🚀 Getting Started
+## 🚀 Quick Start
+
+### For Complete Setup Instructions
+
+📖 **NEW USERS**: See our comprehensive [SETUP_GUIDE.md](SETUP_GUIDE.md) for detailed step-by-step installation instructions including:
+- Virtual environment setup
+- API key configuration (Groq, ElevenLabs)
+- Database initialization
+- LLM server setup
+- Troubleshooting common issues
 
 ### Prerequisites
 
 - Python 3.8+
-- MongoDB (installed and running on `localhost:27017`)
-- MongoDB Compass (optional, for database visualization)
+- Groq API Key (free at [https://console.groq.com](https://console.groq.com))
+- ElevenLabs API Key (optional, for voice features - [https://elevenlabs.io](https://elevenlabs.io))
 
-### Installation
+### Quick Installation
 
-1. **Clone or navigate to the project directory**
+1. **Clone the repository**
    ```bash
+   git clone https://github.com/ParthPatel-1011/AI_Companion.git
    cd ai_companion_backend
    ```
 
-2. **Create a virtual environment**
+2. **Run setup script**
+   
+   **Windows:**
    ```bash
-   # Windows
-   python -m venv venv
-   venv\Scripts\activate
-
-   # Linux/Mac
-   python3 -m venv venv
-   source venv/bin/activate
+   setup.bat
    ```
-
-3. **Install dependencies**
+   
+   **Linux/Mac:**
    ```bash
-   pip install -r requirements.txt
+   chmod +x setup.sh
+   ./setup.sh
    ```
 
-4. **Ensure MongoDB is running**
-   - Start MongoDB service
-   - Verify connection at `mongodb://localhost:27017/`
-
-5. **Initialize the database with companion data**
+3. **Configure environment variables**
    
-   Open MongoDB Compass and connect to `mongodb://localhost:27017/`
-   
-   Create database: `AICompanionDB`
-   
-   Create collection: `companions`
-   
-   Insert sample companions:
-
-   **Girl Companion:**
-   ```json
-   {
-     "name": "Emma",
-     "gender": "girl",
-     "age": 22,
-     "backstory": "I'm Emma, a cheerful art student who loves painting and music. I'm always excited to learn about new things and meet interesting people. I enjoy deep conversations about life, art, and dreams. I'm empathetic and love helping others feel better.",
-     "personality_traits": ["cheerful", "creative", "empathetic", "curious"],
-     "interests": ["art", "music", "movies", "coffee", "photography"],
-     "speaking_style": "friendly",
-     "created_at": {"$date": "2025-10-15T00:00:00Z"}
-   }
+   Create a `.env` file in the root directory:
+   ```env
+   GROQ_API_KEY=your_groq_api_key_here
+   ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
    ```
 
-   **Boy Companion:**
-   ```json
-   {
-     "name": "Alex",
-     "gender": "boy",
-     "age": 24,
-     "backstory": "I'm Alex, a tech enthusiast and gamer who loves exploring new technologies. I'm passionate about coding, gaming, and sci-fi movies. I'm friendly, supportive, and always up for a good conversation about anything from tech to philosophy.",
-     "personality_traits": ["intelligent", "friendly", "supportive", "curious"],
-     "interests": ["technology", "gaming", "coding", "sci-fi", "music"],
-     "speaking_style": "casual",
-     "created_at": {"$date": "2025-10-15T00:00:00Z"}
-   }
+4. **Initialize database**
+   
+   **Windows:**
+   ```bash
+   setup_database.bat
+   ```
+   
+   **Linux/Mac:**
+   ```bash
+   chmod +x setup_database.sh
+   ./setup_database.sh
    ```
 
 ## 🏃 Running the Application
 
 ### Start the Backend Server
 
+**Using run scripts (Recommended):**
+
+**Windows:**
 ```bash
-# Make sure you're in the ai_companion_backend directory
-uvicorn app.main:app --reload
+run.bat
 ```
 
-The server will start at: `http://127.0.0.1:8000`
+**Linux/Mac:**
+```bash
+chmod +x run.sh
+./run.sh
+```
+
+**Or manually:**
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+The server will start at: `http://localhost:8000`
 
 ### API Documentation
 
 Once the server is running, access the interactive API documentation:
 
-- **Swagger UI**: http://127.0.0.1:8000/docs
-- **ReDoc**: http://127.0.0.1:8000/redoc
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+- **Health Check**: http://localhost:8000/
 
 ### Test the Frontend
 
-Open `index.html` in your web browser to test the chat functionality.
+Open `index.html` in your web browser or serve it using:
+
+```bash
+python -m http.server 3000
+# Then open http://localhost:3000
+```
 
 ## 📚 API Endpoints
 
@@ -169,67 +176,94 @@ Open `index.html` in your web browser to test the chat functionality.
 
 ## 🔧 Configuration
 
-### Database Configuration
+### Environment Variables
 
-Edit `app/database.py` to change MongoDB connection settings:
+The application uses environment variables for configuration. Create a `.env` file:
 
-```python
-MONGO_URI = "mongodb://localhost:27017/"
-DATABASE_NAME = "AICompanionDB"
+```env
+# Required
+GROQ_API_KEY=your_groq_api_key_here
+
+# Optional (for voice features)
+ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
+
+# Database (SQLite by default)
+DATABASE_URL=sqlite:///./ai_companion.db
+
+# Server Configuration
+HOST=0.0.0.0
+PORT=8000
 ```
 
-### AI Service Configuration
+### LLM Configuration
 
-The AI service in `app/services/ai_service.py` currently uses mock responses. To integrate with a real LLM (e.g., OpenAI):
+The system uses **Groq** as the LLM provider with the following models:
+- `llama-3.1-70b-versatile` (default for conversations)
+- `llama-3.1-8b-instant` (for quick responses)
+- `mixtral-8x7b-32768` (for long context)
 
-```python
-# In ai_service.py, replace the generate_contextual_response method:
+Configuration is in [`app/config.py`](app/config.py).
 
-import openai
+### Voice Configuration
 
-def generate_contextual_response(self, prompt: str, companion_context: Dict) -> str:
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": companion_context["backstory"]},
-            {"role": "user", "content": prompt}
-        ]
-    )
-    return response.choices[0].message.content
-```
+Voice features use ElevenLabs TTS. See [VOICE_SETUP_GUIDE.md](VOICE_SETUP_GUIDE.md) for details.
 
 ## 📊 Database Collections
 
 ### Users Collection
-Stores user information and preferences.
+Stores user information and authentication data.
 
 ### Companions Collection
-Stores AI companion personalities and backstories.
+Stores AI companion personalities and backstories (Emma and Alex).
 
 ### Chats Collection
 Stores all conversation history between users and companions.
+
+### Messages Collection
+Stores individual messages with sentiment analysis and context.
+
+The system uses **SQLite** by default for easy setup. Data is stored in `ai_companion.db`.
 
 ## 🔮 Future Extensions
 
 This modular architecture supports easy integration of:
 
-- **Face Recognition** - Visual identification
-- **Real LLM Integration** - OpenAI, Anthropic, etc. (temporary use GTTS)
-- **Multi-modal Input** - Images, voice, video
+- **Advanced Voice Features** - Real-time voice conversations
+- **Multi-language Support** - Conversations in multiple languages
+- **Custom Companions** - User-created AI personalities
 
 ## 🐛 Troubleshooting
 
-### MongoDB Connection Error
-- Ensure MongoDB is running: `mongod --version`
-- Check if MongoDB service is active
-- Verify connection string in `database.py`
+For detailed troubleshooting, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
-### Import Errors
-- Activate virtual environment
-- Reinstall dependencies: `pip install -r requirements.txt`
+### Quick Fixes
 
-### Port Already in Use
-- Change port in startup command: `uvicorn app.main:app --reload --port 8001`
+**API Key Errors:**
+```bash
+# Check your .env file for correct API keys
+# Ensure no extra spaces or quotes
+```
+
+**Import Errors:**
+```bash
+# Activate virtual environment and reinstall
+pip install --upgrade -r requirements.txt
+```
+
+**Port Already in Use:**
+```bash
+# Change port in run script or use:
+uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+```
+
+**Database Errors:**
+```bash
+# Delete and recreate database
+rm ai_companion.db
+python setup_database.py
+```
+
+For voice-related issues, see [VOICE_SETUP_GUIDE.md](VOICE_SETUP_GUIDE.md).
 
 ## 📝 License
 
