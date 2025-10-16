@@ -214,7 +214,7 @@ Stores all conversation history between users and companions.
 This modular architecture supports easy integration of:
 
 - **Face Recognition** - Visual identification
-- **Real LLM Integration** - OpenAI, Anthropic, etc. (temporary use GTTS)
+- **Real LLM Integration** - OpenAI, Anthropic, etc. (TTS - currently use elevenlebs API limited tokens)
 - **Multi-modal Input** - Images, voice, video
 
 ## 🐛 Troubleshooting
