@@ -228,9 +228,15 @@ The system uses **SQLite** by default for easy setup. Data is stored in `ai_comp
 
 This modular architecture supports easy integration of:
 
+<<<<<<< HEAD
 - **Advanced Voice Features** - Real-time voice conversations
 - **Multi-language Support** - Conversations in multiple languages
 - **Custom Companions** - User-created AI personalities
+=======
+- **Face Recognition** - Visual identification
+- **Real LLM Integration** - OpenAI, Anthropic, etc. (TTS - currently use elevenlebs API limited tokens)
+- **Multi-modal Input** - Images, voice, video
+>>>>>>> 84857c806e3592bbfaaa7f6d48d96797c59709a1
 
 ## 🐛 Troubleshooting
 
