@@ -619,7 +619,7 @@
 
     <script>
         // Configuration
-        const API_BASE = 'http://127.0.0.1:8000';
+        const API_BASE = 'http://127.0.0.1:8001';
         
         // State
         let currentUser = null;
@@ -827,7 +827,7 @@
                     body: JSON.stringify({
                         name: name,
                         email: email,
-                        voice_preference: 'nova',
+                        voice_preference: 'auto',  // Auto-select based on gender
                         gender_preference: gender
                     })
                 });
@@ -1062,7 +1062,7 @@
                         user_id: currentUser.user_id,
                         companion_gender: companionGender,
                         message: text,
-                        voice: 'nova'
+                        voice: null  // Auto-select voice based on companion gender
                     })
                 });
                 

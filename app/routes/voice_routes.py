@@ -13,6 +13,7 @@ from app.database import chats, companions, users
 from app.models.chat_model import ChatMessage
 from app.services.ai_service_enhanced import enhanced_ai_service
 from app.services.tts_service import tts_service
+from app.config import settings
 from bson import ObjectId
 from datetime import datetime
 
@@ -25,7 +26,7 @@ class VoiceChatRequest(BaseModel):
     user_id: str
     companion_gender: str
     message: str  # Transcribed text from speech
-    voice: Optional[str] = "nova"  # TTS voice to use
+    voice: Optional[str] = None  # TTS voice to use (optional, auto-selected by gender if not provided)
     
 class VoiceChatResponse(BaseModel):
     """Response model for voice chat"""
@@ -86,14 +87,15 @@ async def voice_chat(chat_data: VoiceChatRequest):
             companion_context=companion_context
         )
         
-        # Convert AI response to speech
+        # Convert AI response to speech using ElevenLabs with gender-specific voice
         if tts_service.is_available():
             audio_base64 = await tts_service.text_to_speech_base64(
                 text=ai_response_text,
-                voice=chat_data.voice
+                voice=chat_data.voice,
+                gender=chat_data.companion_gender  # Pass gender to select appropriate voice
             )
         else:
-            logger.warning("TTS not available, returning empty audio")
+            logger.warning("ElevenLabs TTS not available, returning empty audio")
             audio_base64 = ""
         
         # Store chat in database
@@ -137,21 +139,28 @@ async def voice_chat(chat_data: VoiceChatRequest):
 @router.post("/tts")
 async def text_to_speech_endpoint(
     text: str,
-    voice: Optional[str] = "nova",
-    speed: Optional[float] = 1.0
+    voice: Optional[str] = None,
+    speed: Optional[float] = 1.0,
+    gender: Optional[str] = "girl"  # Default to female voice
 ):
     """
-    Convert text to speech audio
+    Convert text to speech audio using ElevenLabs
     Returns MP3 audio stream
+    
+    Args:
+        text: Text to convert to speech
+        voice: Optional voice ID (overrides gender selection)
+        speed: Speaking speed (note: ElevenLabs uses stability settings)
+        gender: 'girl' or 'boy' to select appropriate voice
     """
     try:
         if not tts_service.is_available():
             raise HTTPException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail="TTS service not available. Please configure OpenAI API key."
+                detail="ElevenLabs TTS service not available. Please configure ELEVENLABS_API_KEY in .env"
             )
         
-        audio_bytes = await tts_service.text_to_speech(text, voice, speed)
+        audio_bytes = await tts_service.text_to_speech(text, voice, speed, gender)
         
         return Response(
             content=audio_bytes,
@@ -172,28 +181,39 @@ async def text_to_speech_endpoint(
 
 @router.get("/check-tts")
 async def check_tts_availability():
-    """Check if TTS service is available"""
+    """Check if ElevenLabs TTS service is available"""
     available = tts_service.is_available()
     return {
         "tts_available": available,
-        "provider": "OpenAI TTS" if available else "None",
-        "message": "TTS ready" if available else "Please configure OpenAI API key"
+        "provider": "ElevenLabs" if available else "None",
+        "message": "ElevenLabs TTS ready" if available else "Please configure ELEVENLABS_API_KEY in .env"
     }
 
 @router.get("/voices")
 async def list_available_voices():
-    """List available TTS voices"""
+    """List available ElevenLabs TTS voices for male and female companions"""
     voices = [
-        {"id": "alloy", "name": "Alloy", "description": "Neutral and balanced"},
-        {"id": "echo", "name": "Echo", "description": "Male, clear and articulate"},
-        {"id": "fable", "name": "Fable", "description": "British accent, expressive"},
-        {"id": "onyx", "name": "Onyx", "description": "Deep male voice"},
-        {"id": "nova", "name": "Nova", "description": "Female, warm and friendly"},
-        {"id": "shimmer", "name": "Shimmer", "description": "Female, soft and gentle"}
+        {
+            "id": "female",
+            "name": "Female Companion Voice",
+            "description": "Warm, friendly female voice (Rachel) - used for girl companions",
+            "gender": "female",
+            "voice_id": settings.elevenlabs_female_voice_id if settings else "EXAVITQu4vr4xnSDxMaL"
+        },
+        {
+            "id": "male",
+            "name": "Male Companion Voice",
+            "description": "Confident, deep male voice (Adam) - used for boy companions",
+            "gender": "male",
+            "voice_id": settings.elevenlabs_male_voice_id if settings else "pNInz6obpgDQGcFmaJgB"
+        }
     ]
     
     return {
         "voices": voices,
-        "default": "nova",
-        "tts_available": tts_service.is_available()
+        "provider": "ElevenLabs",
+        "default_female": settings.elevenlabs_female_voice_id if settings else "EXAVITQu4vr4xnSDxMaL",
+        "default_male": settings.elevenlabs_male_voice_id if settings else "pNInz6obpgDQGcFmaJgB",
+        "tts_available": tts_service.is_available(),
+        "note": "Voice is automatically selected based on companion gender (girl/boy)"
     }

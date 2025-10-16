@@ -18,12 +18,12 @@ call venv\Scripts\activate.bat
 echo Starting FastAPI server...
 echo.
 echo Server will be available at:
-echo   - API: http://127.0.0.1:8000
-echo   - Docs: http://127.0.0.1:8000/docs
+echo   - API: http://127.0.0.1:8001
+echo   - Docs: http://127.0.0.1:8001/docs
 echo   - Test UI: Open index.html in your browser
 echo.
 echo Press Ctrl+C to stop the server
 echo ========================================
 echo.
 
-uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+uvicorn app.main:app --reload --host 127.0.0.1 --port 8001

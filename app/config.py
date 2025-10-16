@@ -24,14 +24,18 @@ class Settings(BaseSettings):
     anthropic_api_key: Optional[str] = None
     anthropic_model: str = "claude-3-sonnet-20240229"
     
-    # Text-to-Speech
-    use_openai_tts: bool = True
-    openai_tts_voice: str = "nova"  # alloy, echo, fable, onyx, nova, shimmer
-    openai_tts_model: str = "tts-1"  # tts-1 or tts-1-hd
-    
-    # ElevenLabs (Optional)
+    # Text-to-Speech - ElevenLabs
+    use_elevenlabs_tts: bool = True
     elevenlabs_api_key: Optional[str] = None
-    elevenlabs_voice_id: Optional[str] = None
+    
+    # ElevenLabs Voice IDs for different genders (Optimized for friendly, human-like tone)
+    elevenlabs_female_voice_id: str = "21m00Tcm4TlvDq8ikWAM"  # Rachel - warm, friendly, natural female voice (Emma)
+    elevenlabs_male_voice_id: str = "pNInz6obpgDQGcFmaJgB"    # Adam - warm, friendly, natural male voice (Alex)
+    
+    # Legacy TTS options (now commented out - using ElevenLabs)
+    # use_openai_tts: bool = False
+    # openai_tts_voice: str = "nova"  # alloy, echo, fable, onyx, nova, shimmer
+    # openai_tts_model: str = "tts-1"  # tts-1 or tts-1-hd
     
     # Database
     mongo_uri: str = "mongodb://localhost:27017/"

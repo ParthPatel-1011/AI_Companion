@@ -14,6 +14,9 @@ anthropic>=0.39.0
 # Audio Processing
 pydub>=0.25.1
 
+# Text-to-Speech - ElevenLabs
+elevenlabs>=1.0.0
+
 # Additional utilities
 python-dotenv>=1.0.0
 aiofiles>=24.1.0
